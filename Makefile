@@ -44,6 +44,11 @@ CFLAGS += -specs=nano.specs
 
 CFLAGS += -DSTM32F072xB ############ need to move/define this somewhere else
 
+CFLAGS += -I$(HAL_DRIVER)/libmaple -I$(HAL_DRIVER)/libmaple/libmaple
+CFLAGS += -I$(HAL_DRIVER)/libmaple/wirish
+CFLAGS += -I$(HAL_DRIVER)/libmaple/wirish/boards
+CFLAGS += -DBOARD_discovery
+
 CXXFLAGS = -fno-rtti -fno-exceptions
 
 ###################################################
@@ -60,7 +65,6 @@ CFLAGS += -I$(HAL_DRIVER)/CMSIS/Include -I$(HAL_DRIVER)/STM32F0xx_HAL_Driver/Inc
 CFLAGS += -include$(HAL_DRIVER)/stm32f0xx_hal_conf.h
 CFLAGS += -I$(HAL_DRIVER)/STM32_USB_Device_Library/Core/Inc
 CFLAGS += -I$(HAL_DRIVER)/STM32_USB_Device_Library/Class/CDC/Inc
-CFLAGS += -I$(HAL_DRIVER)/libmaple -I$(HAL_DRIVER)/libmaple/libmaple
 
 ASMSRCS += startup_stm32f072xb.s ############ need to move/define this somewhere else
 
