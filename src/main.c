@@ -45,8 +45,6 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3;
 UART_HandleTypeDef huart4;
 
-char json_buffer[80];
-char * pjson_buffer = json_buffer;
 uint32_t dfu_reset_to_bootloader_magic;
 
 static void SystemClock_Config(void);
@@ -73,10 +71,10 @@ void dfu_run_bootloader()
     NVIC_SystemReset();
 }
 
+int cpp_main(void);
+
 int main(void)
 {
-  int16_t keyin;
-  
   /* STM32F0xx HAL library initialization:
        - Configure the Flash prefetch, Flash preread and Buffer caches
        - Systick timer is configured by default as source of time base, but user 
@@ -107,37 +105,17 @@ int main(void)
   /* Start Device Process */
   USBD_Start(&USBD_Device);
   
-  memset(json_buffer, 0, sizeof(json_buffer)/sizeof(&json_buffer[0]));
-  
   /* No buffering, serial input/output occurs immediately */
   setvbuf(stdin,  NULL, _IONBF, 0);
   setvbuf(stdout, NULL, _IONBF, 0);
   setvbuf(stderr, NULL, _IONBF, 0);
 
-  while (1)
-  {
-    keyin = getchar();
+  setup();
 
-    switch (keyin) {
-      case '{':
-        printf("JSON Start\n");
-        pjson_buffer = json_buffer;
-        memset(json_buffer, 0, sizeof(json_buffer)/sizeof(&json_buffer[0]));
-        *pjson_buffer++ = keyin;
-        break;
-      case '}':
-        printf("JSON End\n");
-        *pjson_buffer++ = keyin;
-        break;
-      default:
-        if (keyin > 0) {
-          printf("%c", keyin);
-          *pjson_buffer++ = keyin;
-        }
-        break;
-    }
-    
-    HAL_Delay(1);
+  while (1) {
+    loop();
+    //HAL_Delay(3000);
+    //printf("Hello STM32\n");
   }
 }
 

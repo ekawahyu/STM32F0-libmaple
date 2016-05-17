@@ -6,6 +6,8 @@ SRCS = main.c system_stm32f0xx.c syscalls.c
 SRCS += stm32f0xx_hal_msp.c stm32f0xx_it.c
 SRCS += usbd_cdc_interface.c usbd_conf.c usbd_desc.c
 
+CXXSRCS = sketch.cpp
+
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 PROJ_NAME=main
 
@@ -28,22 +30,26 @@ OPENOCD_PROC_FILE=scripts/stm32f0-openocd.cfg
 ###################################################
 
 CC=$(ARM_NONE_EABI_BIN)/arm-none-eabi-gcc
+CXX=$(ARM_NONE_EABI_BIN)/arm-none-eabi-g++
 OBJCOPY=$(ARM_NONE_EABI_BIN)/arm-none-eabi-objcopy
 OBJDUMP=$(ARM_NONE_EABI_BIN)/arm-none-eabi-objdump
 SIZE=$(ARM_NONE_EABI_BIN)/arm-none-eabi-size
 
-CFLAGS  = -Wall -g -std=c99 -O2
+CFLAGS  = -Wall -g -O2
 CFLAGS += -mlittle-endian -mcpu=cortex-m0  -march=armv6-m -mthumb
-CFLAGS += -ffunction-sections -fdata-sections -ffreestanding
+CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wl,--gc-sections -Wl,-Map=$(PROJ_NAME).map
-#CFLAGS += -specs=nano.specs
+CFLAGS += -specs=nano.specs
 #CFLAGS += -u _printf_float -u _scanf_float
 
 CFLAGS += -DSTM32F072xB ############ need to move/define this somewhere else
 
+CXXFLAGS = -fno-rtti -fno-exceptions
+
 ###################################################
 
 vpath %.c src
+vpath %.cpp src
 vpath %.s Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc
 vpath %.a $(HAL_DRIVER)
 
@@ -54,10 +60,11 @@ CFLAGS += -I$(HAL_DRIVER)/CMSIS/Include -I$(HAL_DRIVER)/STM32F0xx_HAL_Driver/Inc
 CFLAGS += -include$(HAL_DRIVER)/stm32f0xx_hal_conf.h
 CFLAGS += -I$(HAL_DRIVER)/STM32_USB_Device_Library/Core/Inc
 CFLAGS += -I$(HAL_DRIVER)/STM32_USB_Device_Library/Class/CDC/Inc
+CFLAGS += -I$(HAL_DRIVER)/libmaple -I$(HAL_DRIVER)/libmaple/libmaple
 
-SRCS += startup_stm32f072xb.s ############ need to move/define this somewhere else
+ASMSRCS += startup_stm32f072xb.s ############ need to move/define this somewhere else
 
-OBJS = $(SRCS:.c=.o)
+OBJS = $(SRCS:.c=.o) $(ASMSRCS:.s=.o) $(CXXSRCS:.cpp=.o)
 
 ###################################################
 
@@ -70,13 +77,22 @@ lib:
 
 proj: $(PROJ_NAME).elf
 
-$(PROJ_NAME).elf: $(SRCS)
-	$(CC) $(CFLAGS) $^ -o $@ -L$(HAL_DRIVER) -lstm32f0 -L$(LDSCRIPT_INC) -TSTM32F072RB_FLASH.ld
+$(PROJ_NAME).elf: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ -L$(HAL_DRIVER) -lstm32f0 -L$(LDSCRIPT_INC) -TSTM32F072RB_FLASH.ld -lstdc++_nano
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 	$(OBJDUMP) -St $(PROJ_NAME).elf >$(PROJ_NAME).lst
 	$(SIZE) $(PROJ_NAME).elf
-	
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.s
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.cpp
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+
 flash: all $(PROJ_NAME).bin
 	$(OPENOCD_HOME)/bin/openocd -f $(OPENOCD_INTERFACE_DIR)/stlink-v2.cfg -f $(OPENOCD_TARGET_DIR)/stm32f0x.cfg -f $(OPENOCD_PROC_FILE) -c "stm_flash `pwd`/$(PROJ_NAME).bin" -c shutdown
 

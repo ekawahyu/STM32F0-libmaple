@@ -37,7 +37,7 @@
 <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="main.elf"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="STM32F0-libmaple"/>
 <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="false"/>
-<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="0.1550142424"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value=""/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/STM32F0-libmaple"/>
 </listAttribute>

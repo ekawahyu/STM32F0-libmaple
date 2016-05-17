@@ -111,7 +111,8 @@ caddr_t _sbrk(int incr)
 
 	if (heap_end + incr >  stack)
 	{
-		_write (STDERR_FILENO, "Heap and stack collision\n", 25);
+	  const char * s = "Heap and stack collision\n";
+		_write (STDERR_FILENO, (char *)s, 25);
 		errno = ENOMEM;
 		return  (caddr_t) -1;
 		//abort ();
@@ -124,14 +125,15 @@ caddr_t _sbrk(int incr)
 
 void _exit(int status)
 {
-	_write (STDERR_FILENO, "exit", 4);
+  const char * s = "exit";
+	_write (STDERR_FILENO, (char *)s, 4);
 
 	while (1);
 }
 
 int _read(int fd, char *ptr, size_t len)
 {
-	int i;
+	unsigned int i;
 	size_t counter = 0;
 	uint8_t buf;
 
