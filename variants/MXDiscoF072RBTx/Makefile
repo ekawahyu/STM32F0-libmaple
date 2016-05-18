@@ -52,6 +52,7 @@ CXXFLAGS = -fno-rtti -fno-exceptions
 
 ###################################################
 
+vpath %.c $(HAL_DRIVER)/CMSIS/Device/ST/STM32F0xx/Source/Templates
 vpath %.c Src ../../cores/mapleMX
 vpath %.cpp Src ../../cores/mapleMX
 vpath %.s Src

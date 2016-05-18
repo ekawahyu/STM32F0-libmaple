@@ -67,7 +67,7 @@ Reset_Handler:
   ldr   r0, =_estack
   mov   sp, r0          /* set stack pointer */
 
-  bl  SystemInit        /* call SystemInit earlier to make DFU soft boot to work */
+  bl  __initialize_hardware_early /* check for DFU soft boot */
 
 /* Copy the data segment initializers from flash to SRAM */
   movs r1, #0
@@ -100,7 +100,7 @@ LoopFillZerobss:
   bcc FillZerobss
 
 /* Call the clock system intitialization function.*/
-  //bl  SystemInit
+  bl  SystemInit
 /* Call static constructors */
   bl __libc_init_array
 /* Call the application's entry point.*/
