@@ -39,7 +39,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-#include "usbd_cdc_interface.h"
+#include "usbd_cdc_if.h"
 
 #undef errno
 extern int errno;
