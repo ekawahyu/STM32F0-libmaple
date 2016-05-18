@@ -36,6 +36,9 @@
 
 #include "main.h"
 
+void setup(void);
+void loop(void);
+
 #define SYSMEM_RESET_VECTOR            0x1FFFC804
 #define RESET_TO_BOOTLOADER_MAGIC_CODE 0xDEADBEEF
 #define BOOTLOADER_STACK_POINTER       0x20002250
@@ -54,24 +57,30 @@ static void MX_USART4_UART_Init(void);
 
 void __initialize_hardware_early(void)
 {
-    if (dfu_reset_to_bootloader_magic == RESET_TO_BOOTLOADER_MAGIC_CODE) {
-        void (*bootloader)(void) = (void (*)(void)) (*((uint32_t *) SYSMEM_RESET_VECTOR));
-        dfu_reset_to_bootloader_magic = 0;
-        __set_MSP(BOOTLOADER_STACK_POINTER);
-        bootloader();
-        while (42);
-    } else {
-        //SystemInit();
-    }
+  if (dfu_reset_to_bootloader_magic == RESET_TO_BOOTLOADER_MAGIC_CODE) {
+    void (*bootloader)(void) = (void (*)(void)) (*((uint32_t *) SYSMEM_RESET_VECTOR));
+    dfu_reset_to_bootloader_magic = 0;
+    __set_MSP(BOOTLOADER_STACK_POINTER);
+    bootloader();
+    while (42);
+  }
 }
 
 void dfu_run_bootloader()
 {
-    dfu_reset_to_bootloader_magic = RESET_TO_BOOTLOADER_MAGIC_CODE;
-    NVIC_SystemReset();
+  dfu_reset_to_bootloader_magic = RESET_TO_BOOTLOADER_MAGIC_CODE;
+  NVIC_SystemReset();
 }
 
-int cpp_main(void);
+void MX_GPIO_Init(void)
+{
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+}
 
 int main(void)
 {
@@ -89,6 +98,7 @@ int main(void)
   /* Configure the system clock to get correspondent USB clock source */
   SystemClock_Config();
   
+  MX_GPIO_Init();
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_USART4_UART_Init();
@@ -110,12 +120,14 @@ int main(void)
   setvbuf(stdout, NULL, _IONBF, 0);
   setvbuf(stderr, NULL, _IONBF, 0);
 
+  /* Increase delay time if you don't see any printf() happening on USB CDC ACM */
+  /* TODO Halt here until USB CDC ACM is ready */
+  HAL_Delay(2000);
+
   setup();
 
   while (1) {
     loop();
-    //HAL_Delay(3000);
-    //printf("Hello STM32\n");
   }
 }
 

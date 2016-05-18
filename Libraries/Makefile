@@ -1,4 +1,4 @@
-ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi/bin
+ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi-4.8.3/bin
 CC=$(ARM_NONE_EABI_BIN)/arm-none-eabi-gcc
 AR=$(ARM_NONE_EABI_BIN)/arm-none-eabi-ar
 
@@ -8,7 +8,8 @@ vpath %.c STM32F0xx_HAL_Driver/Src STM32_USB_Device_Library/Core/Src STM32F0xx_H
 
 CFLAGS  = -g -O2 -Wall
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m0 -march=armv6s-m
-CFLAGS += -ffreestanding -nostdlib -specs=nano.specs
+CFLAGS += -ffreestanding -nostdlib
+CFLAGS += -specs=nano.specs
 #CFLAGS += -u _printf_float -u _scanf_float
 CFLAGS += -includestm32f0xx_hal_conf.h -I./ -ICMSIS/Include -ICMSIS/Device/ST/STM32F0xx/Include -ISTM32F0xx_HAL_Driver/Inc
 CFLAGS += -I../inc -ISTM32_USB_Device_Library/Core/Inc -ISTM32_USB_Device_Library/Class/CDC/Inc

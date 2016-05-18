@@ -1,12 +1,12 @@
-ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi/bin
+ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi-4.8.3/bin
 OPENOCD_HOME=/opt/local
 
 # put your *.o targets here, make should handle the rest!
 SRCS = main.c system_stm32f0xx.c syscalls.c
 SRCS += stm32f0xx_hal_msp.c stm32f0xx_it.c
 SRCS += usbd_cdc_interface.c usbd_conf.c usbd_desc.c
-
-CXXSRCS = sketch.cpp
+SRCS += wiring.c wiring_digital.c
+CXXSRCS = variant.cpp sketch.cpp
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 PROJ_NAME=main
@@ -44,17 +44,14 @@ CFLAGS += -specs=nano.specs
 
 CFLAGS += -DSTM32F072xB ############ need to move/define this somewhere else
 
-CFLAGS += -I$(HAL_DRIVER)/libmaple -I$(HAL_DRIVER)/libmaple/libmaple
-CFLAGS += -I$(HAL_DRIVER)/libmaple/wirish
-CFLAGS += -I$(HAL_DRIVER)/libmaple/wirish/boards
-CFLAGS += -DBOARD_discovery
+CFLAGS += -ImapleMX
 
 CXXFLAGS = -fno-rtti -fno-exceptions
 
 ###################################################
 
-vpath %.c src
-vpath %.cpp src
+vpath %.c src mapleMX
+vpath %.cpp src mapleMX
 vpath %.s Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc
 vpath %.a $(HAL_DRIVER)
 
@@ -82,7 +79,7 @@ lib:
 proj: $(PROJ_NAME).elf
 
 $(PROJ_NAME).elf: $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ -L$(HAL_DRIVER) -lstm32f0 -L$(LDSCRIPT_INC) -TSTM32F072RB_FLASH.ld -lstdc++_nano
+	$(CC) $(CFLAGS) -o $@ $^ -L$(HAL_DRIVER) -lstm32f0 -L$(LDSCRIPT_INC) -TSTM32F072RB_FLASH.ld
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 	$(OBJDUMP) -St $(PROJ_NAME).elf >$(PROJ_NAME).lst
