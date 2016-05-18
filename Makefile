@@ -1,4 +1,4 @@
-ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi-4.8.3/bin
+ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi/bin
 OPENOCD_HOME=/opt/local
 
 # put your *.o targets here, make should handle the rest!
@@ -35,7 +35,7 @@ OBJCOPY=$(ARM_NONE_EABI_BIN)/arm-none-eabi-objcopy
 OBJDUMP=$(ARM_NONE_EABI_BIN)/arm-none-eabi-objdump
 SIZE=$(ARM_NONE_EABI_BIN)/arm-none-eabi-size
 
-CFLAGS  = -Wall -g -O2
+CFLAGS  = -Wall -g -O2 -D__STRICT_ANSI__
 CFLAGS += -mlittle-endian -mcpu=cortex-m0  -march=armv6-m -mthumb
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -Wl,--gc-sections -Wl,-Map=$(PROJ_NAME).map

@@ -1,4 +1,4 @@
-ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi-4.8.3/bin
+ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi/bin
 CC=$(ARM_NONE_EABI_BIN)/arm-none-eabi-gcc
 AR=$(ARM_NONE_EABI_BIN)/arm-none-eabi-ar
 
