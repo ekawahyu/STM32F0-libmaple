@@ -4,15 +4,19 @@ AR=$(ARM_NONE_EABI_BIN)/arm-none-eabi-ar
 
 ###########################################
 
-vpath %.c STM32F0xx_HAL_Driver/Src STM32_USB_Device_Library/Core/Src STM32F0xx_HAL_Driver/Src STM32_USB_Device_Library/Class/CDC/Src
+vpath %.c STM32F0xx_HAL_Driver/Src STM32_USB_Device_Library/Core/Src STM32F0xx_HAL_Driver/Src 
+vpath %.c ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src
+vpath %.c ../Middlewares/ST/STM32_USB_Device_Library/Core/Src
 
 CFLAGS  = -g -O2 -Wall
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m0 -march=armv6s-m
 CFLAGS += -ffreestanding -nostdlib
 CFLAGS += -specs=nano.specs
 #CFLAGS += -u _printf_float -u _scanf_float
-CFLAGS += -includestm32f0xx_hal_conf.h -I./ -ICMSIS/Include -ICMSIS/Device/ST/STM32F0xx/Include -ISTM32F0xx_HAL_Driver/Inc
-CFLAGS += -I../inc -ISTM32_USB_Device_Library/Core/Inc -ISTM32_USB_Device_Library/Class/CDC/Inc
+CFLAGS += -include../Inc/stm32f0xx_hal_conf.h -I./ -ICMSIS/Include
+CFLAGS += -ICMSIS/Device/ST/STM32F0xx/Include -ISTM32F0xx_HAL_Driver/Inc
+CFLAGS += -I../Inc -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+CFLAGS += -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
 
 CFLAGS += -DSTM32F072xB ############ need to move/define this somewhere else
 

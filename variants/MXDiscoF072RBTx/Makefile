@@ -1,5 +1,6 @@
 ARM_NONE_EABI_BIN=/Users/nodino/gcc-arm-none-eabi/bin
 OPENOCD_HOME=/opt/local
+COPY=cp
 
 # put your *.o targets here, make should handle the rest!
 SRCS = main.c system_stm32f0xx.c syscalls.c
@@ -11,11 +12,14 @@ CXXSRCS = variant.cpp sketch.cpp
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 PROJ_NAME=main
 
-# Location of the Libraries folder from the STM32F0xx Standard Peripheral Library
-HAL_DRIVER=Libraries
+# Location of the STM32F0xx HAL Drivers
+HAL_DRIVER=Drivers
+
+# Location of the STM32F0xx USB Device Library
+MIDDLEWARE=Middlewares/ST
 
 # Location of the linker scripts
-LDSCRIPT_INC=scripts
+LDSCRIPT_INC=../../scripts
 
 # location of OpenOCD Board .cfg files (only used with 'make program')
 OPENOCD_BOARD_DIR=$(OPENOCD_HOME)/scripts/board
@@ -23,7 +27,7 @@ OPENOCD_INTERFACE_DIR=$(OPENOCD_HOME)/share/openocd/scripts/interface
 OPENOCD_TARGET_DIR=$(OPENOCD_HOME)/share/openocd/scripts/target
 
 # Configuration (cfg) file containing programming directives for OpenOCD
-OPENOCD_PROC_FILE=scripts/stm32f0-openocd.cfg
+OPENOCD_PROC_FILE=../../scripts/stm32f0-openocd.cfg
 
 # that's it, no need to change anything below this line!
 
@@ -44,24 +48,23 @@ CFLAGS += -specs=nano.specs
 
 CFLAGS += -DSTM32F072xB ############ need to move/define this somewhere else
 
-CFLAGS += -ImapleMX
-
 CXXFLAGS = -fno-rtti -fno-exceptions
 
 ###################################################
 
-vpath %.c src mapleMX
-vpath %.cpp src mapleMX
-vpath %.s src
+vpath %.c Src ../../cores/mapleMX
+vpath %.cpp Src ../../cores/mapleMX
+vpath %.s Src
 vpath %.a $(HAL_DRIVER)
 
 ROOT=$(shell pwd)
 
-CFLAGS += -Iinc -I$(HAL_DRIVER) -I$(HAL_DRIVER)/CMSIS/Device/ST/STM32F0xx/Include
+CFLAGS += -I. -IInc -I$(HAL_DRIVER) -I$(HAL_DRIVER)/CMSIS/Device/ST/STM32F0xx/Include
 CFLAGS += -I$(HAL_DRIVER)/CMSIS/Include -I$(HAL_DRIVER)/STM32F0xx_HAL_Driver/Inc
-CFLAGS += -include$(HAL_DRIVER)/stm32f0xx_hal_conf.h
-CFLAGS += -I$(HAL_DRIVER)/STM32_USB_Device_Library/Core/Inc
-CFLAGS += -I$(HAL_DRIVER)/STM32_USB_Device_Library/Class/CDC/Inc
+CFLAGS += -includeInc/stm32f0xx_hal_conf.h
+CFLAGS += -I$(MIDDLEWARE)/STM32_USB_Device_Library/Core/Inc
+CFLAGS += -I$(MIDDLEWARE)/STM32_USB_Device_Library/Class/CDC/Inc
+CFLAGS += -I../../cores/mapleMX
 
 ASMSRCS += startup_stm32f072xb.s ############ need to move/define this somewhere else
 
@@ -84,6 +87,8 @@ $(PROJ_NAME).elf: $(OBJS)
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 	$(OBJDUMP) -St $(PROJ_NAME).elf >$(PROJ_NAME).lst
 	$(SIZE) $(PROJ_NAME).elf
+	$(COPY) $(PROJ_NAME).elf ../..
+	$(COPY) $(PROJ_NAME).bin ../..
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -105,6 +110,8 @@ clean:
 	rm -f $(PROJ_NAME).bin
 	rm -f $(PROJ_NAME).map
 	rm -f $(PROJ_NAME).lst
+	rm -f ../../$(PROJ_NAME).elf
+	rm -f ../../$(PROJ_NAME).bin
 
 distclean: clean
 	$(MAKE) -C $(HAL_DRIVER) clean

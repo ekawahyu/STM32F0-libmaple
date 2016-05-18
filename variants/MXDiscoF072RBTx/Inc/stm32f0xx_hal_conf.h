@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    stm32f0xx_hal_conf.h
   * @author  MCD Application Team
-  * @version V1.3.1
+  * @version V1.5.0
   * @date    29-January-2016
   * @brief   HAL configuration file.
   ******************************************************************************
@@ -151,8 +151,11 @@
   */
 #if !defined  (LSE_STARTUP_TIMEOUT)
   #define LSE_STARTUP_TIMEOUT    ((uint32_t)5000)   /*!< Time out for LSE start up, in ms */
-#endif /* LSE_STARTUP_TIMEOUT */
+#endif /* LSE_STARTUP_TIMEOUT */     
 
+#if !defined  (LSE_STARTUP_TIMEOUT)
+  #define LSE_STARTUP_TIMEOUT    ((uint32_t)5000)   /*!< Time out for LSE start up, in ms */
+#endif /* HSE_STARTUP_TIMEOUT */
 
 /* Tip: To avoid modifying this file each time you need to use different HSE,
    ===  you can define the HSE value in your toolchain compiler preprocessor. */
@@ -162,9 +165,9 @@
   * @brief This is the HAL system configuration section
   */     
 #define  VDD_VALUE                    ((uint32_t)3300) /*!< Value of VDD in mv */           
-#define  TICK_INT_PRIORITY            ((uint32_t)(1<<__NVIC_PRIO_BITS) - 1)   /*!< tick interrupt priority (lowest by default)             */
-                                                                              /*  Warning: Must be set to higher priority for HAL_Delay()  */
-                                                                              /*  and HAL_GetTick() usage under interrupt context          */
+#define  TICK_INT_PRIORITY            0  /*!< tick interrupt priority (lowest by default)             */
+                                         /*  Warning: Must be set to higher priority for HAL_Delay()  */
+                                         /*  and HAL_GetTick() usage under interrupt context          */
 #define  USE_RTOS                     0
 #define  PREFETCH_ENABLE              1
 #define  INSTRUCTION_CACHE_ENABLE     0
@@ -311,4 +314,3 @@
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-
