@@ -5,7 +5,7 @@ COPY=cp
 # put your *.o targets here, make should handle the rest!
 SRCS = main.c system_stm32f0xx.c syscalls.c
 SRCS += stm32f0xx_hal_msp.c stm32f0xx_it.c
-SRCS += usbd_cdc_interface.c usbd_conf.c usbd_desc.c
+SRCS += usbd_cdc_if.c usbd_conf.c usbd_desc.c
 SRCS += wiring.c wiring_digital.c
 CXXSRCS = variant.cpp sketch.cpp
 
