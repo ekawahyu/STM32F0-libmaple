@@ -52,7 +52,7 @@ CXXFLAGS = -fno-rtti -fno-exceptions
 
 vpath %.c src mapleMX
 vpath %.cpp src mapleMX
-vpath %.s Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc
+vpath %.s src
 vpath %.a $(HAL_DRIVER)
 
 ROOT=$(shell pwd)
