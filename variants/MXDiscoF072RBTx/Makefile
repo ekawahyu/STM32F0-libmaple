@@ -19,7 +19,7 @@ HAL_DRIVER=Drivers
 MIDDLEWARE=Middlewares/ST
 
 # Location of the linker scripts
-LDSCRIPT_INC=../../scripts
+LDSCRIPT_INC=scripts
 
 # location of OpenOCD Board .cfg files (only used with 'make program')
 OPENOCD_BOARD_DIR=$(OPENOCD_HOME)/scripts/board
@@ -27,7 +27,7 @@ OPENOCD_INTERFACE_DIR=$(OPENOCD_HOME)/share/openocd/scripts/interface
 OPENOCD_TARGET_DIR=$(OPENOCD_HOME)/share/openocd/scripts/target
 
 # Configuration (cfg) file containing programming directives for OpenOCD
-OPENOCD_PROC_FILE=../../scripts/stm32f0-openocd.cfg
+OPENOCD_PROC_FILE=scripts/stm32f0-openocd.cfg
 
 # that's it, no need to change anything below this line!
 
